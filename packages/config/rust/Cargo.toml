@@ -1,0 +1,22 @@
+[package]
+name = "config"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+envconfig = "0.10.0"
+url = "2"
+uuid = { version = "1", features = ["v7", "serde"] }
+dotenvy = "0.15.7"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[profile.release]
+opt-level = "z"           # минимальный размер
+lto = "fat"               # агрессивная LTO
+codegen-units = 1         # максимум оптимизации
+panic = "abort"           # минимизация кода panic
+strip = true              # удаляем debug info
+debug = 0                 # отключаем дебаг
+incremental = false       # отключаем инкрементальную сборку
+overflow-checks = false   # отключаем проверку переполнения

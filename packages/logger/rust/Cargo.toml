@@ -1,0 +1,23 @@
+[package]
+name = "logger"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter", "time", "chrono"] }
+tracing-appender = "0.2"
+time = { version = "0.3", features = ["formatting"] }
+
+config = { path = "../../config/rust" }
+
+[profile.release]
+opt-level = "z"           # минимальный размер
+lto = "fat"               # агрессивная LTO
+codegen-units = 1         # максимум оптимизации
+panic = "abort"           # минимизация кода panic
+strip = true              # удаляем debug info
+debug = 0                 # отключаем дебаг
+incremental = false       # отключаем инкрементальную сборку
+overflow-checks = false   # отключаем проверку переполнения

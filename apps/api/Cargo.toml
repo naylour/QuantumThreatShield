@@ -1,0 +1,43 @@
+[package]
+name = "api"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+axum = { version = "0.8", features = ["macros"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tower-http = { version = "0.5", features = ["trace", "cors"] }
+uuid = { version = "1", features = ["v7", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+utoipa-scalar = { version = "0.3", features = ["axum"] }
+utoipa = { version = "5" }
+
+# My packages
+config = { path = "../../packages/config/rust", version = "0.1.0" }
+logger = { path = "../../packages/logger/rust", version = "0.1.0" }
+database = { path = "./database", version = "0.1.0" }
+
+[dependencies.sqlx]
+version = "0.8"
+features = [
+    "postgres",
+    "runtime-tokio-rustls",
+    "macros",
+    "uuid",
+    "chrono"
+]
+
+[workspace]
+members = ['database', "repositories"]
+
+[profile.release]
+opt-level = "z"           # минимальный размер
+lto = "fat"               # агрессивная LTO
+codegen-units = 1         # максимум оптимизации
+panic = "abort"           # минимизация кода panic
+strip = true              # удаляем debug info
+debug = 0                 # отключаем дебаг
+incremental = false       # отключаем инкрементальную сборку
+overflow-checks = false   # отключаем проверку переполнения
