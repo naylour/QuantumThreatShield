@@ -1,7 +1,7 @@
 use axum::{Json, extract::FromRequest, http::StatusCode};
 use serde::de::DeserializeOwned;
 
-use crate::app::response::ApiResponse;
+use super::response::ApiResponse;
 
 pub struct ApiJson<T>(pub T);
 

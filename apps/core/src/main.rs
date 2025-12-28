@@ -1,13 +1,9 @@
-mod app;
-mod routes;
-mod server;
 mod utils;
 
 use anyhow::Result;
+use api;
 use database::init_database;
 use logger::{self, init_logger};
-
-use crate::server::run_server;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -22,7 +18,8 @@ async fn main() -> Result<()> {
         }
     };
 
-    let _logger = match init_logger(&config.mode, "../../logs") {
+    let mode = &config.mode;
+    let _logger = match init_logger(mode, "../../logs") {
         Ok(_guard) => {
             logger::info!("Логгирование запущено");
             _guard
@@ -48,7 +45,9 @@ async fn main() -> Result<()> {
         }
     };
 
-    run_server(database_pool, config.app.port_api).await?;
+    api::Api::new(database_pool)
+        .run(config.app.port_api)
+        .await?;
 
     Ok(())
 }

@@ -1,0 +1,54 @@
+[package]
+name = "qts_core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+anyhow = { version = "1.0" }
+
+tower-http = { version = "0.5", features = ["trace", "cors"] }
+
+
+# My packages
+config = { path = "../../packages/config/rust", version = "0.1.0" }
+logger = { path = "../../packages/logger/rust", version = "0.1.0" }
+database = { path = "./database", version = "0.1.0" }
+api = { path = "./api", version = "0.1.0" }
+core = { path = "./core", version = "0.1.0" }
+correlation = { path = "./correlation", version = "0.1.0" }
+data_ingestion = { path = "./data_ingestion", version = "0.1.0" }
+threat = { path = "./threat", version = "0.1.0" }
+vulnerability = { path = "./vulnerability", version = "0.1.0" }
+
+[dependencies.sqlx]
+version = "0.8"
+default-features = false
+features = [
+	"postgres",
+	"runtime-tokio-rustls",
+	"macros",
+	"uuid",
+	"chrono"
+]
+
+[workspace]
+members = [
+    "api",
+    "core",
+    "correlation",
+    "data_ingestion",
+    "database",
+    "threat",
+    "vulnerability"
+]
+
+[profile.release]
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+debug = 0
+incremental = false
+overflow-checks = false
