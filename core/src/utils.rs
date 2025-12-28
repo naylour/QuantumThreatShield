@@ -6,7 +6,7 @@ pub fn take_config() -> Result<Config> {
     let current = std::env::current_dir().with_context(|| "Cannot get current dir".to_string())?;
 
     let env_path = current
-        .join("../../infra/env/.env")
+        .join("../infra/env/.env")
         .canonicalize()
         .with_context(|| format!("Не удалось найти файл окружения"))?;
 

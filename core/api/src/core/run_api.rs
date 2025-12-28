@@ -1,4 +1,4 @@
-use super::core::api::Api;
+use super::api::Api;
 use anyhow::Context;
 use logger;
 
@@ -7,7 +7,7 @@ impl Api {
         logger::info!("Инициализация API...");
 
         let app = axum::Router::new()
-            .merge(super::routes::router())
+            .merge(crate::routes::router())
             .with_state(self.state.clone());
 
         let addr = format!("0.0.0.0:{port}");

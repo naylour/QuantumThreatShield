@@ -18,8 +18,7 @@ async fn main() -> Result<()> {
         }
     };
 
-    let mode = &config.mode;
-    let _logger = match init_logger(mode, "../../logs") {
+    let _logger = match init_logger(&config.mode, "../logs") {
         Ok(_guard) => {
             logger::info!("Логгирование запущено");
             _guard
@@ -32,7 +31,7 @@ async fn main() -> Result<()> {
 
     logger::info!("Инициализация приложения...");
     logger::info!("Попытка подключения к базе данных...");
-    // logger::debug!("\n{}", format!("{}", config));
+    logger::debug!("\n{}", format!("{}", config));
 
     let database_pool = match init_database(&config.database.url.to_string()).await {
         Ok(pool) => {
