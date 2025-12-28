@@ -10,8 +10,19 @@ export default defineConfig({
 		tailwindcss(),
 		sveltekit(),
 		devtoolsJson(),
-		paraglideVitePlugin({ project: './project.inlang', outdir: './src/lib/paraglide' })
+		paraglideVitePlugin({
+            project: './i18n',
+            outdir: './src/lib/i18n',
+            cookieName: 'LANG',
+            localStorageKey: 'LANG'
+         })
 	],
+
+    optimizeDeps: {
+        rolldownOptions: {
+
+        }
+    },
 
 	test: {
 		expect: { requireAssertions: true },

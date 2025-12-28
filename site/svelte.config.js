@@ -1,20 +1,53 @@
 import { mdsvex } from 'mdsvex';
-import adapter from '@sveltejs/adapter-auto';
+import adapter from 'svelte-adapter-bun';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	// Consult https://svelte.dev/docs/kit/integrations
-	// for more information about preprocessors
 	preprocess: [vitePreprocess(), mdsvex()],
 
 	kit: {
-		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
-		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
-		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
-		adapter: adapter()
-	},
+		adapter: adapter({
+            out: './build',
+            envPrefix: 'SITE_',
+            precompress: true,
+            serveAssets: true
+        }),
 
+        experimental: {
+            remoteFunctions: true
+        },
+
+        appDir: 'qts',
+
+        output: {
+            bundleStrategy: 'split',
+            preloadStrategy: 'modulepreload'
+        },
+
+        env: {
+            dir: '../infra/env'
+        },
+
+        router: {
+            type: 'pathname',
+            resolution: 'server'
+        },
+
+        alias: {
+            $lib: './src/lib',
+            $components: './src/components',
+            $sections: './src/sections',
+            $i18n: './src/lib/i18n'
+        }
+	},
+    compilerOptions: {
+        runes: true,
+
+        experimental: {
+            async: true
+        }
+    },
 	extensions: ['.svelte', '.svx']
 };
 
