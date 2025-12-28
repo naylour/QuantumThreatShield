@@ -36,6 +36,7 @@ checksum = "a23eb6b1614318a8071c9b2521f36b424b2c83db5eb3a0fead4a6c0809af6e61"
 name = "api"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "axum",
  "chrono",
  "config",
@@ -227,6 +228,7 @@ dependencies = [
 name = "config"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "dotenvy",
  "envconfig",
  "serde",
@@ -308,6 +310,10 @@ dependencies = [
 [[package]]
 name = "database"
 version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "sqlx",
+]
 
 [[package]]
 name = "der"
@@ -1248,6 +1254,10 @@ name = "regex-syntax"
 version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a2d987857b319362043e95f5353c0535c1f58eec5336fdfcf626430af7def58"
+
+[[package]]
+name = "repositories"
+version = "0.1.0"
 
 [[package]]
 name = "ring"

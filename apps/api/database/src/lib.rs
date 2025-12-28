@@ -1,14 +1,12 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+use anyhow::{Context, Result};
+use sqlx::{PgPool, postgres::PgPoolOptions};
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub async fn init_database(database_url: &str) -> Result<PgPool> {
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect(database_url)
+        .await
+        .with_context(|| format!("Не удалось подключиться к базе данных: {}", database_url))?;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+    Ok(pool)
 }

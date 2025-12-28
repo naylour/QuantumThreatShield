@@ -75,7 +75,7 @@ impl TryFrom<raw_schema::Config> for Config {
         let database_password = Uuid::parse_str(&value.database.password)
             .map_err(|_| ConfigError::InvalidPassword("DATABASE_PASSWORD".to_string()))?;
 
-        let redis_password = Uuid::parse_str(&value.database.password)
+        let redis_password = Uuid::parse_str(&value.redis.password)
             .map_err(|_| ConfigError::InvalidPassword("REDIS_PASSWORD".to_string()))?;
 
         Ok(Config {
@@ -108,7 +108,19 @@ impl TryFrom<raw_schema::Config> for Config {
 
 impl fmt::Display for Config {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let pretty_json = serde_json::to_string_pretty(self).unwrap();
+        let pretty_json = serde_json::to_string_pretty(self).map_err(|_| fmt::Error)?;
         write!(f, "Config {}", pretty_json)
     }
 }
+
+impl fmt::Display for ConfigError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ConfigError::InvalidUrl(s) => write!(f, "Неверный URL: {}", s),
+            ConfigError::InvalidPort(s) => write!(f, "Неверный порт: {}", s),
+            ConfigError::InvalidPassword(s) => write!(f, "Неверный пароль: {}", s),
+        }
+    }
+}
+
+impl std::error::Error for ConfigError {}

@@ -1,19 +1,54 @@
 mod app;
+mod routes;
+mod server;
 mod utils;
 
-use logger::{debug, info, init_logger};
-use std::io::Error;
+use anyhow::Result;
+use database::init_database;
+use logger::{self, init_logger};
+
+use crate::server::run_server;
 
 #[tokio::main]
-async fn main() -> Result<(), Error> {
-    let config = utils::take_config().expect("Не удалось загрузить конфигурацию");
+async fn main() -> Result<()> {
+    let config = match utils::take_config() {
+        Ok(_config) => {
+            println!("Конфигурация загружена. Режим работы: {}", &_config.mode);
+            _config
+        }
+        Err(error) => {
+            eprintln!("{:#?}", error);
+            std::process::exit(1);
+        }
+    };
 
-    let _logger = init_logger(&config.mode, "../../logs").unwrap();
+    let _logger = match init_logger(&config.mode, "../../logs") {
+        Ok(_guard) => {
+            logger::info!("Логгирование запущено");
+            _guard
+        }
+        Err(error) => {
+            logger::error!("{:#?}", error);
+            std::process::exit(1);
+        }
+    };
 
-    info!("Логгирование запущено");
-    info!("Инициализация приложения...");
-    info!("Конфигурация загружена");
-    debug!("\n{}", format!("{}", config));
+    logger::info!("Инициализация приложения...");
+    logger::info!("Попытка подключения к базе данных...");
+    // logger::debug!("\n{}", format!("{}", config));
+
+    let database_pool = match init_database(&config.database.url.to_string()).await {
+        Ok(pool) => {
+            logger::info!("Подключение к базе успешно");
+            pool
+        }
+        Err(err) => {
+            logger::error!("{:#?}", err);
+            std::process::exit(1); // Можно завершить программу
+        }
+    };
+
+    run_server(database_pool, config.app.port_api).await?;
 
     Ok(())
 }

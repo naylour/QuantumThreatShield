@@ -1,5 +1,5 @@
-use axum::{Json, extract::FromRequest, http::StatusCode, response::IntoResponse};
-use serde::{Serialize, de::DeserializeOwned};
+use axum::{Json, http::StatusCode, response::IntoResponse};
+use serde::Serialize;
 use utoipa::ToSchema;
 
 #[derive(Serialize, ToSchema, Debug)]
